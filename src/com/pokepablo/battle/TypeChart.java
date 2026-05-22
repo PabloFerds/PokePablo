@@ -7,114 +7,96 @@ import java.util.Map;
 
 public class TypeChart {
 
-    private static final Map<PokemonType, Map<PokemonType, Double>> chart = new HashMap<>();
+    private static final Map<PokemonType, Map<PokemonType, Double>> chart =
+            new HashMap<>();
 
     static {
 
+        for (PokemonType attacker : PokemonType.values()) {
+            chart.put(attacker, new HashMap<>());
+        }
+
         // FIRE
-        chart.put(PokemonType.FIRE, Map.of(
-                PokemonType.GRASS, 2.0,
-                PokemonType.BUG, 2.0,
-                PokemonType.ICE, 2.0,
-                PokemonType.ROCK, 0.5,
-                PokemonType.WATER, 0.5,
-                PokemonType.FIRE, 1.0
-        ));
+        chart.get(PokemonType.FIRE).put(PokemonType.GRASS, 2.0);
+        chart.get(PokemonType.FIRE).put(PokemonType.BUG, 2.0);
+        chart.get(PokemonType.FIRE).put(PokemonType.ICE, 2.0);
+        chart.get(PokemonType.FIRE).put(PokemonType.ROCK, 0.5);
+        chart.get(PokemonType.FIRE).put(PokemonType.WATER, 0.5);
+        chart.get(PokemonType.FIRE).put(PokemonType.FIRE, 1.0);
 
         // WATER
-        chart.put(PokemonType.WATER, Map.of(
-                PokemonType.FIRE, 2.0,
-                PokemonType.ROCK, 2.0,
-                PokemonType.GROUND, 2.0,
-                PokemonType.GRASS, 0.5,
-                PokemonType.ELECTRIC, 0.5,
-                PokemonType.WATER, 1.0
-        ));
+        chart.get(PokemonType.WATER).put(PokemonType.FIRE, 2.0);
+        chart.get(PokemonType.WATER).put(PokemonType.ROCK, 2.0);
+        chart.get(PokemonType.WATER).put(PokemonType.GROUND, 2.0);
+        chart.get(PokemonType.WATER).put(PokemonType.GRASS, 0.5);
+        chart.get(PokemonType.WATER).put(PokemonType.ELECTRIC, 0.5);
+        chart.get(PokemonType.WATER).put(PokemonType.WATER, 1.0);
 
         // GRASS
-        chart.put(PokemonType.GRASS, Map.of(
-                PokemonType.WATER, 2.0,
-                PokemonType.GROUND, 2.0,
-                PokemonType.ROCK, 2.0,
-                PokemonType.FIRE, 0.5,
-                PokemonType.BUG, 0.5,
-                PokemonType.FLYING, 0.5,
-                PokemonType.POISON, 0.5,
-                PokemonType.GRASS, 1.0
-        ));
+        chart.get(PokemonType.GRASS).put(PokemonType.WATER, 2.0);
+        chart.get(PokemonType.GRASS).put(PokemonType.GROUND, 2.0);
+        chart.get(PokemonType.GRASS).put(PokemonType.ROCK, 2.0);
+        chart.get(PokemonType.GRASS).put(PokemonType.FIRE, 0.5);
+        chart.get(PokemonType.GRASS).put(PokemonType.BUG, 0.5);
+        chart.get(PokemonType.GRASS).put(PokemonType.FLYING, 0.5);
+        chart.get(PokemonType.GRASS).put(PokemonType.POISON, 0.5);
+        chart.get(PokemonType.GRASS).put(PokemonType.GRASS, 1.0);
 
         // ELECTRIC
-        chart.put(PokemonType.ELECTRIC, Map.of(
-                PokemonType.WATER, 2.0,
-                PokemonType.FLYING, 2.0,
-                PokemonType.GROUND, 0.0,
-                PokemonType.ELECTRIC, 1.0
-        ));
+        chart.get(PokemonType.ELECTRIC).put(PokemonType.WATER, 2.0);
+        chart.get(PokemonType.ELECTRIC).put(PokemonType.FLYING, 2.0);
+        chart.get(PokemonType.ELECTRIC).put(PokemonType.GROUND, 0.0);
+        chart.get(PokemonType.ELECTRIC).put(PokemonType.ELECTRIC, 1.0);
 
         // ROCK
-        chart.put(PokemonType.ROCK, Map.of(
-                PokemonType.FIRE, 2.0,
-                PokemonType.FLYING, 2.0,
-                PokemonType.BUG, 2.0,
-                PokemonType.ICE, 2.0,
-                PokemonType.FIGHTING, 0.5,
-                PokemonType.GROUND, 0.5,
-                PokemonType.WATER, 0.5,
-                PokemonType.ROCK, 1.0
-        ));
+        chart.get(PokemonType.ROCK).put(PokemonType.FIRE, 2.0);
+        chart.get(PokemonType.ROCK).put(PokemonType.FLYING, 2.0);
+        chart.get(PokemonType.ROCK).put(PokemonType.BUG, 2.0);
+        chart.get(PokemonType.ROCK).put(PokemonType.ICE, 2.0);
+        chart.get(PokemonType.ROCK).put(PokemonType.FIGHTING, 0.5);
+        chart.get(PokemonType.ROCK).put(PokemonType.GROUND, 0.5);
+        chart.get(PokemonType.ROCK).put(PokemonType.WATER, 0.5);
+        chart.get(PokemonType.ROCK).put(PokemonType.ROCK, 1.0);
 
         // GHOST
-        chart.put(PokemonType.GHOST, Map.of(
-                PokemonType.PSYCHIC, 2.0,
-                PokemonType.NORMAL, 0.0,
-                PokemonType.FIGHTING, 0.0,
-                PokemonType.GHOST, 2.0
-        ));
+        chart.get(PokemonType.GHOST).put(PokemonType.PSYCHIC, 2.0);
+        chart.get(PokemonType.GHOST).put(PokemonType.NORMAL, 0.0);
+        chart.get(PokemonType.GHOST).put(PokemonType.FIGHTING, 0.0);
+        chart.get(PokemonType.GHOST).put(PokemonType.GHOST, 2.0);
 
         // FIGHTING
-        chart.put(PokemonType.FIGHTING, Map.of(
-                PokemonType.NORMAL, 2.0,
-                PokemonType.ROCK, 2.0,
-                PokemonType.ICE, 2.0,
-                PokemonType.PSYCHIC, 0.5,
-                PokemonType.FLYING, 0.5,
-                PokemonType.BUG, 0.5,
-                PokemonType.FIGHTING, 1.0
-        ));
+        chart.get(PokemonType.FIGHTING).put(PokemonType.NORMAL, 2.0);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.ROCK, 2.0);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.ICE, 2.0);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.PSYCHIC, 0.5);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.FLYING, 0.5);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.BUG, 0.5);
+        chart.get(PokemonType.FIGHTING).put(PokemonType.FIGHTING, 1.0);
 
         // GROUND
-        chart.put(PokemonType.GROUND, Map.of(
-                PokemonType.FIRE, 2.0,
-                PokemonType.ELECTRIC, 2.0,
-                PokemonType.POISON, 2.0,
-                PokemonType.ROCK, 2.0,
-                PokemonType.GRASS, 0.5,
-                PokemonType.ICE, 0.5,
-                PokemonType.WATER, 0.5,
-                PokemonType.GROUND, 1.0
-        ));
+        chart.get(PokemonType.GROUND).put(PokemonType.FIRE, 2.0);
+        chart.get(PokemonType.GROUND).put(PokemonType.ELECTRIC, 2.0);
+        chart.get(PokemonType.GROUND).put(PokemonType.POISON, 2.0);
+        chart.get(PokemonType.GROUND).put(PokemonType.ROCK, 2.0);
+        chart.get(PokemonType.GROUND).put(PokemonType.GRASS, 0.5);
+        chart.get(PokemonType.GROUND).put(PokemonType.ICE, 0.5);
+        chart.get(PokemonType.GROUND).put(PokemonType.WATER, 0.5);
+        chart.get(PokemonType.GROUND).put(PokemonType.GROUND, 1.0);
 
         // DRAGON
-        chart.put(PokemonType.DRAGON, Map.of(
-                PokemonType.DRAGON, 2.0,
-                PokemonType.ICE, 0.5,
-                PokemonType.FLYING, 1.0
-        ));
-
-        // DEFAULT (neutro)
-        for (PokemonType attacker : PokemonType.values()) {
-            chart.putIfAbsent(attacker, new HashMap<>());
-
-            for (PokemonType defender : PokemonType.values()) {
-                chart.get(attacker)
-                        .putIfAbsent(defender, 1.0);
-            }
-        }
+        chart.get(PokemonType.DRAGON).put(PokemonType.DRAGON, 2.0);
+        chart.get(PokemonType.DRAGON).put(PokemonType.ICE, 0.5);
+        chart.get(PokemonType.DRAGON).put(PokemonType.FLYING, 1.0);
     }
 
     public static double getMultiplier(PokemonType attacker, PokemonType defender) {
-        return chart
-                .getOrDefault(attacker, Map.of())
-                .getOrDefault(defender, 1.0);
+
+        Map<PokemonType, Double> inner = chart.get(attacker);
+
+        if (inner == null) {
+            return 1.0;
+        }
+
+        return inner.getOrDefault(defender, 1.0);
     }
 }

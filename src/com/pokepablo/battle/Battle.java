@@ -1,8 +1,9 @@
 package com.pokepablo.battle;
 
 import com.pokepablo.model.Move;
-import com.pokepablo.model.Pokemon;
 import com.pokepablo.model.Player;
+import com.pokepablo.model.Pokemon;
+
 import java.util.Scanner;
 
 public class Battle {
@@ -17,21 +18,36 @@ public class Battle {
         this.enemyPokemon = enemyPokemon;
     }
 
+    // =========================
+    // PLAYER TURN
+    // =========================
     public void playerTurn(int moveIndex) {
 
         if (player.getActivePokemon().isFainted()) {
             System.out.println(player.getActivePokemon().getName() + " is fainted!");
             return;
         }
-        Move move = player.getActivePokemon().getMove(moveIndex);//seleciona o move
-        int damage = move.execute(player.getActivePokemon(), enemyPokemon);//fazert toda a verificacao do execute
+
+        if (moveIndex < 0 ||
+            moveIndex >= player.getActivePokemon().getMoves().size()) {
+            System.out.println("Invalid move!");
+            return;
+        }
+
+        Move move = player.getActivePokemon().getMove(moveIndex);
+
+        int damage = move.execute(
+                player.getActivePokemon(),
+                enemyPokemon
+        );
+
         System.out.println(
                 player.getActivePokemon().getName()
                 + " used "
                 + move.getName()
-        );//quem atacou e nome do ataque
+        );
 
-        System.out.println("Damage: " + damage);//dano causado
+        System.out.println("Damage: " + damage);
 
         System.out.println(
                 enemyPokemon.getName()
@@ -39,17 +55,29 @@ public class Battle {
                 + enemyPokemon.getCurrentHp()
                 + "/"
                 + enemyPokemon.getMaxHp()
-        );//vida restante do enemy
+        );
     }
 
+    // =========================
+    // ENEMY TURN
+    // =========================
     public void enemyTurn() {
+
         if (enemyPokemon.isFainted()) {
             System.out.println(enemyPokemon.getName() + " is fainted!");
             return;
         }
-        int randomIndex = (int) (Math.random() * enemyPokemon.getMoves().size());//aleatoriza o move do pokemon
+
+        int randomIndex = (int) (
+                Math.random() * enemyPokemon.getMoves().size()
+        );
+
         Move move = enemyPokemon.getMove(randomIndex);
-        int damage = move.execute(enemyPokemon, player.getActivePokemon());
+
+        int damage = move.execute(
+                enemyPokemon,
+                player.getActivePokemon()
+        );
 
         System.out.println(
                 enemyPokemon.getName()
@@ -57,9 +85,7 @@ public class Battle {
                 + move.getName()
         );
 
-        System.out.println(
-                "Damage: " + damage
-        );
+        System.out.println("Damage: " + damage);
 
         System.out.println(
                 player.getActivePokemon().getName()
@@ -70,48 +96,133 @@ public class Battle {
         );
     }
 
+    // =========================
+    // BATTLE STATE
+    // =========================
     public boolean isBattleOver() {
-        return player.getActivePokemon().isFainted() || enemyPokemon.isFainted();
-    }//fim da batalha 
 
-    private void choosePokemon() {//escolhendo pokemon para batalhar 
+        return enemyPokemon.isFainted()
+                || !player.hasAvailablePokemon();
+    }
+
+    // =========================
+    // CHOOSE POKEMON
+    // =========================
+    private void choosePokemon() {
+
         System.out.println("\nChoose your Pokemon:");
+
         for (int i = 0; i < player.getPokemons().size(); i++) {
 
             Pokemon pokemon = player.getPokemons().get(i);
 
             System.out.println(
-                    i + " - "
-                    + pokemon.getName()
-                    + " Lv."
-                    + pokemon.getLevel()
+                    i + " - " +
+                    pokemon.getName() +
+                    " Lv." + pokemon.getLevel() +
+                    " HP: " + pokemon.getCurrentHp() +
+                    "/" + pokemon.getMaxHp()
             );
-        }// mostra todos os meus pokemons seu nivel e nome
+        }
 
-        int choice = input.nextInt();//escolha feita com o id
+        int choice = input.nextInt();
 
-        Pokemon selectedPokemon = player.getPokemons().get(choice);
+        Pokemon selected = player.getPokemons().get(choice);
 
-        player.setActivePokemon(selectedPokemon); //pokemon escohido
+        if (selected.isFainted()) {
+            System.out.println("This Pokémon is fainted! Choose another one.");
+            choosePokemon();
+            return;
+        }
 
-        System.out.println(
-                "\nGo "
-                + selectedPokemon.getName()
-                + "!"
-        );
+        player.setActivePokemon(selected);
+
+        System.out.println("\nGo " + selected.getName() + "!");
     }
 
+    // =========================
+    // SHOW MOVES
+    // =========================
+    private void showMoves() {
+
+        System.out.println("\nChoose a move:");
+
+        for (int i = 0; i < player.getActivePokemon().getMoves().size(); i++) {
+
+            Move move = player.getActivePokemon().getMove(i);
+
+            System.out.println(
+                    i + " - " +
+                    move.getName() +
+                    " PP: " +
+                    move.getCurrentPP() +
+                    "/" +
+                    move.getMaxPP()
+            );
+        }
+    }
+
+    // =========================
+    // CATCH POKEMON
+    // =========================
+    private boolean tryCatchPokemon() {
+
+        if (!player.usePokeball()) {
+            System.out.println("No Pokeballs left!");
+            return false;
+        }
+
+        double hpPercent =
+                (double) enemyPokemon.getCurrentHp()
+                        / enemyPokemon.getMaxHp();
+
+        double catchChance = 1 - hpPercent;
+
+        if (Math.random() < catchChance) {
+
+            System.out.println(
+                    enemyPokemon.getName() + " was caught!"
+            );
+
+            player.addPokemon(enemyPokemon);
+
+            return true;
+        }
+
+        System.out.println(
+                enemyPokemon.getName() + " escaped!"
+        );
+
+        return false;
+    }
+
+    // =========================
+    // START BATTLE
+    // =========================
     public void startBattle() {
 
         System.out.println(
-                "\nA wild "
-                + enemyPokemon.getName()
-                + " appeared!"
-        );//apareceu um pokemon
+                "\nA wild " +
+                enemyPokemon.getName() +
+                " appeared!"
+        );
 
-        choosePokemon();//escolhe o pokemon para a batalha
+        choosePokemon();
 
         while (!isBattleOver()) {
+
+            // 🔥 checagem de derrota do player
+            if (player.getActivePokemon().isFainted()) {
+
+                System.out.println("\nYour Pokémon fainted!");
+
+                if (!player.hasAvailablePokemon()) {
+                    System.out.println("You lost the battle!");
+                    return;
+                }
+
+                choosePokemon();
+            }
 
             System.out.println("\n====== BATTLE ======");
 
@@ -132,25 +243,14 @@ public class Battle {
             );
 
             System.out.println("\n1 - Attack");
-            System.out.println("2 - Run");
+            System.out.println("2 - Catch");
+            System.out.println("3 - Run");
 
             int choice = input.nextInt();
 
             if (choice == 1) {
 
-                for (int i = 0; i < player.getActivePokemon().getMoves().size(); i++) {
-
-                    Move move = player.getActivePokemon().getMove(i);
-
-                    System.out.println(
-                            i + " - "
-                            + move.getName()
-                            + " PP: "
-                            + move.getCurrentPP()
-                            + "/"
-                            + move.getMaxPP()
-                    );
-                }
+                showMoves();
 
                 int moveChoice = input.nextInt();
 
@@ -159,22 +259,27 @@ public class Battle {
                 if (!enemyPokemon.isFainted()) {
                     enemyTurn();
                 }
+
             } else if (choice == 2) {
 
-                System.out.println("You ran away!");
+                if (tryCatchPokemon()) {
+                    return;
+                }
 
+                enemyTurn();
+
+            } else if (choice == 3) {
+
+                System.out.println("You ran away!");
                 return;
+
             } else {
 
                 System.out.println("Invalid option!");
             }
         }
 
-        if (player.getActivePokemon().isFainted()) {
-
-            System.out.println("\nYou lost the battle!");
-        } else {
-
+        if (enemyPokemon.isFainted()) {
             System.out.println("\nYou won the battle!");
         }
     }
